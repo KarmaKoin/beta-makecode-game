@@ -1,18 +1,137 @@
 namespace SpriteKind {
     export const PlayerProjKind = SpriteKind.create()
 }
+namespace StatusBarKind {
+    export const Special = StatusBarKind.create()
+}
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (statusbar.value >= statusbar.max) {
+        SP(true)
+    }
+})
 sprites.onOverlap(SpriteKind.PlayerProjKind, SpriteKind.Projectile, function (sprite, otherSprite) {
-    info.changeScoreBy(1)
     sprites.destroy(otherSprite)
+    if (!(Invincibility)) {
+        statusbar.value += 10
+    }
+    info.changeScoreBy(1)
+    DestoryAstroidAnimationFrames = [img`
+        . . . . . . . . . . . . . . . a 
+        c c a b 6 a c c a f f c c b b a 
+        c a b c 8 6 c c a a a b b c b c 
+        c a c f f a c c a f a c c c b . 
+        c a 8 f c c b a f f c b c c c . 
+        . c b c c c c b f c a b b a c . 
+        . . a b b b b b b b b b b b c . 
+        . . . c c c c b b b b b c c . . 
+        . . . . . f 4 4 c b b c . . . . 
+        . . . . . 2 4 4 4 2 . . . . . . 
+        . . . . . 2 f 4 f 2 . . . . . . 
+        . . . . . . f 4 f . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        c . . b 6 a c c a f f c c . . a 
+        . . b c 8 6 c c a a a b b c . c 
+        c a c f f a c c a f a c c c . . 
+        c a 8 f c c b a f f c b c c . . 
+        . c b c . . . b f c a b b . . . 
+        . . . . . . . b . . . . . . c . 
+        . 1 . . . c c b b . . . . c . . 
+        . . . . . f 4 4 c . . 1 . . . . 
+        1 . 1 . . 2 4 4 4 2 . . . . 1 . 
+        . . . . . 2 f 4 f 2 . 1 . . . . 
+        . . 1 . . . f 4 f . . . . . 1 . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        c . . b . . . . . . . . c . . . 
+        . . b c . . c c . . . b . c . c 
+        c a c . . . c c . . a c . c . . 
+        c a . f c . . . f f c b . . . . 
+        . c . . . . . b f c a b b . . . 
+        . . . . . . . b . . . . . . c . 
+        1 . . 1 . . c b b . . . . c . . 
+        . . . . . . 4 4 c . . . . . . . 
+        . . . . . . . . . . . 1 . . . . 
+        . . 1 1 . 2 f 4 f 2 . . . . 1 . 
+        . . . . . . f . f . . . 1 . 1 . 
+        1 . . 1 . . 2 4 . . . . . . . . 
+        . . . . . . 2 4 2 . . . . . . . 
+        . 1 . 1 . . 2 4 2 . . 1 . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . b . . . . . . . . c . . . 
+        . . b c . . c . . . . b . c . c 
+        c . c . . . . . . . . . . c . . 
+        . . . f c . . . f . . . . . . . 
+        . c . . . . . b f c . b b . . . 
+        . . . . . . . b . . . . . . c . 
+        . . . . . . c . . . . . . c . . 
+        . . 1 1 . . . . . . 1 . . . . . 
+        . 1 . . . . . . . . . . 1 . . . 
+        . . . . . 2 f 4 . . . . . . . . 
+        . . . . . . f . . . . . . . 1 . 
+        . . . . d . . . . . . . . . . . 
+        . . . . . . d . d . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . 1 . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . 1 
+        . . . . . . . . . . . . . . . . 
+        1 . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . 1 . . . 
+        . . 1 . . . . . . . . . . . . . 
+        . . . . . 1 . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `]
+    animation.runImageAnimation(
+    sprite,
+    DestoryAstroidAnimationFrames,
+    10 * DestoryAstroidAnimationFrames.length,
+    false
+    )
+    timer.after(10 * DestoryAstroidAnimationFrames.length, function () {
+        sprites.destroy(sprite, effects.ashes, 100)
+    })
 })
 // This is right click...
 browserEvents.MouseWheel.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    if (Toggle) {
-        Toggle = false
-        mySprite.sayText("")
-    } else {
-        Toggle = true
-        mySprite.sayText("Something Toggled...")
+    if (statusbar.value >= statusbar.max) {
+        SP(true)
     }
 })
 browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
@@ -28,6 +147,15 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 info.onCountdownEnd(function () {
     NoCooldown = true
 })
+function SP (ONOFF: boolean) {
+    if (ONOFF) {
+        Invincibility = true
+        mySprite.sayText("Invincibility Active!")
+    } else {
+        Invincibility = false
+        mySprite.sayText("")
+    }
+}
 function Shoot () {
     NoCooldown = false
     info.startCountdown(0.5)
@@ -53,14 +181,18 @@ function Shoot () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
-    info.changeLifeBy(-1)
+    if (!(Invincibility)) {
+        info.changeLifeBy(-1)
+    }
 })
 browserEvents.onMouseMove(function (x, y) {
     mySprite.setPosition(x, y)
 })
 let projectile: Sprite = null
 let playerPROJ: Sprite = null
-let Toggle = false
+let DestoryAstroidAnimationFrames: Image[] = []
+let Invincibility = false
+let statusbar: StatusBarSprite = null
 let NoCooldown = false
 let mySprite: Sprite = null
 scene.setBackgroundImage(img`
@@ -210,6 +342,13 @@ mySprite.setPosition(76, 98)
 mySprite.setStayInScreen(true)
 controller.moveSprite(mySprite)
 NoCooldown = true
+statusbar = statusbars.create(13, 70, StatusBarKind.Special)
+statusbar.positionDirection(CollisionDirection.Left)
+statusbar.setColor(9, 1, 10)
+statusbar.max = 100
+statusbar.value = 0
+statusbar.setLabel("SP", 9)
+statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
 game.onUpdateInterval(randint(1000, 2200), function () {
     projectile = sprites.createProjectileFromSide(img`
         . . . . . . . . . c c 8 . . . . 
@@ -327,4 +466,12 @@ game.onUpdateInterval(randint(1000, 2200), function () {
     }
     projectile.x = randint(0, 160)
     projectile.setFlag(SpriteFlag.AutoDestroy, true)
+})
+forever(function () {
+    if (Invincibility && statusbar.value > 0) {
+        statusbar.value += -10
+    } else {
+        SP(false)
+    }
+    pause(1000)
 })

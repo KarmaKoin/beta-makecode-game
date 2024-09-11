@@ -3,7 +3,10 @@
     "description": "",
     "dependencies": {
         "device": "*",
-        "browser-events": "*"
+        "browser-events": "*",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
+        "controller": "*",
+        "Timers": "github:microsoft/arcade-timers#v1.1.0"
     },
     "files": [
         "main.blocks",
@@ -15,7 +18,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "2.0.2",
+        "target": "2.0.3",
         "targetId": "arcade"
     },
     "supportedTargets": [
