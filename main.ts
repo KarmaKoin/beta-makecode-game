@@ -11,10 +11,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 sprites.onOverlap(SpriteKind.PlayerProjKind, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
-    if (!(Invincibility)) {
-        statusbar.value += 10
-    }
-    info.changeScoreBy(1)
+    Increase_Score_And_SP()
     DestoryAstroidAnimationFrames = [img`
         . . . . . . . . . . . . . . . a 
         c c a b 6 a c c a f f c c b b a 
@@ -183,15 +180,23 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, ot
     sprites.destroy(otherSprite)
     if (!(Invincibility)) {
         info.changeLifeBy(-1)
+    } else {
+        Increase_Score_And_SP()
     }
 })
 browserEvents.onMouseMove(function (x, y) {
     mySprite.setPosition(x, y)
 })
+function Increase_Score_And_SP () {
+    if (!(Invincibility)) {
+        statusbar.value += 10
+    }
+    info.changeScoreBy(1)
+}
 let projectile: Sprite = null
 let playerPROJ: Sprite = null
-let DestoryAstroidAnimationFrames: Image[] = []
 let Invincibility = false
+let DestoryAstroidAnimationFrames: Image[] = []
 let statusbar: StatusBarSprite = null
 let NoCooldown = false
 let mySprite: Sprite = null
@@ -340,9 +345,10 @@ mySprite = sprites.create(img`
     `, SpriteKind.Player)
 mySprite.setPosition(76, 98)
 mySprite.setStayInScreen(true)
+mySprite.z = 10
 controller.moveSprite(mySprite)
 NoCooldown = true
-statusbar = statusbars.create(13, 70, StatusBarKind.Special)
+statusbar = statusbars.create(10, 70, StatusBarKind.Special)
 statusbar.positionDirection(CollisionDirection.Left)
 statusbar.setColor(9, 1, 10)
 statusbar.max = 100
@@ -464,6 +470,7 @@ game.onUpdateInterval(randint(1000, 2200), function () {
             . . . . . . . . c 7 b c . . . . 
             `)
     }
+    mySprite.z = 5
     projectile.x = randint(0, 160)
     projectile.setFlag(SpriteFlag.AutoDestroy, true)
 })
