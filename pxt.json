@@ -1,5 +1,6 @@
 {
     "name": "Project On Github",
+    "version": "1.0.0",
     "description": "",
     "dependencies": {
         "device": "*",
