@@ -1,9 +1,13 @@
 namespace SpriteKind {
     export const PlayerProjKind = SpriteKind.create()
+    export const SpecialProjectile = SpriteKind.create()
 }
 namespace StatusBarKind {
     export const Special = StatusBarKind.create()
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.SpecialProjectile, function (sprite, otherSprite) {
+    OverlappedSpecialKind(otherSprite)
+})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (statusbar.value >= statusbar.max) {
         SP(true)
@@ -146,9 +150,11 @@ info.onCountdownEnd(function () {
 })
 function SP (ONOFF: boolean) {
     if (ONOFF) {
+        statusbar.setFlag(SpriteFlag.Invisible, false)
         Invincibility = true
         mySprite.sayText("Invincibility Active!")
     } else {
+        statusbar.setFlag(SpriteFlag.Invisible, false)
         Invincibility = false
         mySprite.sayText("")
     }
@@ -184,6 +190,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, ot
         Increase_Score_And_SP()
     }
 })
+function OverlappedSpecialKind (SpriteToDestory: Sprite) {
+    sprites.destroy(SpriteToDestory, effects.smiles, 500)
+    info.changeLifeBy(1)
+    Increase_Score_And_SP()
+    statusbar.value = statusbar.max
+}
 browserEvents.onMouseMove(function (x, y) {
     mySprite.setPosition(x, y)
 })
@@ -193,6 +205,9 @@ function Increase_Score_And_SP () {
     }
     info.changeScoreBy(1)
 }
+sprites.onOverlap(SpriteKind.PlayerProjKind, SpriteKind.SpecialProjectile, function (sprite, otherSprite) {
+    OverlappedSpecialKind(otherSprite)
+})
 let projectile: Sprite = null
 let playerPROJ: Sprite = null
 let Invincibility = false
@@ -355,120 +370,143 @@ statusbar.max = 100
 statusbar.value = 0
 statusbar.setLabel("SP", 9)
 statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+statusbar.setFlag(SpriteFlag.Invisible, false)
 game.onUpdateInterval(randint(1000, 2200), function () {
-    projectile = sprites.createProjectileFromSide(img`
-        . . . . . . . . . c c 8 . . . . 
-        . . . . . . 8 c c c f 8 c c . . 
-        . . . c c 8 8 f c a f f f c c . 
-        . . c c c f f f c a a f f c c c 
-        8 c c c f f f f c c a a c 8 c c 
-        c c c b f f f 8 a c c a a a c c 
-        c a a b b 8 a b c c c c c c c c 
-        a f c a a b b a c c c c c f f c 
-        a 8 f c a a c c a c a c f f f c 
-        c a 8 a a c c c c a a f f f 8 a 
-        . a c a a c f f a a b 8 f f c a 
-        . . c c b a f f f a b b c c 6 c 
-        . . . c b b a f f 6 6 a b 6 c . 
-        . . . c c b b b 6 6 a c c c c . 
-        . . . . c c a b b c c c . . . . 
-        . . . . . c c c c c c . . . . . 
-        `, 0, randint(20, 120))
-    if (Math.percentChance(25)) {
-        projectile.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . c c c . . . . . . 
-            . . . . . . a b a a . . . . . . 
-            . . . . . c b a f c a c . . . . 
-            . . . . c b b b f f a c c . . . 
-            . . . . b b f a b b a a c . . . 
-            . . . . c b f f b a f c a . . . 
-            . . . . . c a a c b b a . . . . 
-            . . . . . . c c c c . . . . . . 
-            . . . . . . . c . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    } else if (Math.percentChance(40)) {
-        projectile.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . c c c c . . 
-            . c c c c c . c c c c c f c c . 
-            c c a c c c c c 8 f f c f f c c 
-            c a f a a c c a f f c a a f f c 
-            c a 8 f a a c a c c c a a a a c 
-            c b c f a a a a a c c c c c c c 
-            c b b a a c f 8 a c c c 8 c c c 
-            . c b b a b c f a a a 8 8 c c . 
-            . . . . a a b b b a a 8 a c . . 
-            . . . . c b c a a c c b . . . . 
-            . . . . b b c c a b b a . . . . 
-            . . . . b b a b a 6 a . . . . . 
-            . . . . c b b b 6 6 c . . . . . 
-            . . . . . c a 6 6 b c . . . . . 
-            . . . . . . . c c c . . . . . . 
-            `)
-    } else if (Math.percentChance(30)) {
-        projectile.setImage(img`
-            . . . . . . c c c . . . . . . . 
-            . . . . . a a a c c c . . . . . 
-            . . . c a c f a a a a c . . . . 
-            . . c a c f f f a f f a c . . . 
-            . c c a c c f a a c f f a c . . 
-            . a b a a c 6 a a c c f a c c c 
-            . a b b b 6 a b b a a c a f f c 
-            . . a b b a f f b b a a c f f c 
-            c . a a a c c f c b a a c f a c 
-            c c a a a c c a a a b b a c a c 
-            a c a b b a a 6 a b b 6 b b c . 
-            b a c b b b 6 b c . c c a c . . 
-            b a c c a b b a c . . . . . . . 
-            b b a c a b a a . . . . . . . . 
-            a b 6 b b a c . . . . . . . . . 
-            . a a b c . . . . . . . . . . . 
-            `)
-    } else if (Math.percentChance(20)) {
-        projectile.setImage(img`
-            . . . . . . . c c c a c . . . . 
-            . . c c b b b a c a a a c . . . 
-            . c c a b a c b a a a b c c . . 
-            . c a b c f f f b a b b b a . . 
-            . c a c f f f 8 a b b b b b a . 
-            . c a 8 f f 8 c a b b b b b a . 
-            c c c a c c c c a b c f a b c c 
-            c c a a a c c c a c f f c b b a 
-            c c a b 6 a c c a f f c c b b a 
-            c a b c 8 6 c c a a a b b c b c 
-            c a c f f a c c a f a c c c b . 
-            c a 8 f c c b a f f c b c c c . 
-            . c b c c c c b f c a b b a c . 
-            . . a b b b b b b b b b b b c . 
-            . . . c c c c b b b b b c c . . 
-            . . . . . . . . c b b c . . . . 
-            `)
-    } else if (Math.percentChance(15)) {
-        projectile.setImage(img`
-            . . . . . . . c c c a c . . . . 
-            . . c c b 7 7 7 c a a a c . . . 
-            . c c 7 7 a c b a a 7 7 c c . . 
-            . c a b c f 7 7 7 7 7 b 7 a . . 
-            . c a 7 7 7 7 8 a b b b 7 7 a . 
-            . c a 7 f f 8 c a b b 7 7 7 a . 
-            c c 7 a 7 c c c 7 7 7 7 a b c c 
-            c 7 7 a 7 c c 7 7 c 7 f c b b a 
-            c 7 7 b 7 7 7 c a f f 7 c 7 7 a 
-            c 7 7 c 8 7 c c a a a 7 b 7 b c 
-            c a 7 f f a c c a f a 7 c c b . 
-            c a 8 f c c b a f f c b 7 c c . 
-            . c b c c 7 7 7 7 7 7 7 7 a c . 
-            . . a b b 7 b b b 7 7 b b b c . 
-            . . . c c c c b b 7 7 b c c . . 
-            . . . . . . . . c 7 b c . . . . 
-            `)
+    if (Math.percentChance(1)) {
+        projectile = sprites.createProjectileFromSide(img`
+            . . 9 . 9 . . . . 1 1 8 . . 9 . 
+            9 . 9 9 9 . 8 1 1 1 f 8 c c 9 . 
+            9 9 . 9 c 8 8 9 1 9 f f f 1 c . 
+            9 9 c c 9 9 f 9 9 9 9 f 1 1 c c 
+            8 1 9 c f f f f c c 9 9 c 9 c 9 
+            1 1 1 9 f 1 1 8 9 c c 9 9 9 9 9 
+            1 9 9 b b 8 9 b 1 9 9 1 1 1 9 9 
+            9 f c 9 9 b b 9 1 9 1 1 1 f f 9 
+            9 8 f c 9 9 9 c 9 c 9 1 f f f c 
+            c 9 8 9 9 1 1 9 c 9 9 f f f 8 9 
+            . 9 1 9 9 1 f f 9 9 b 8 f f c 9 
+            . . 1 1 b 9 f f f 9 b b c c 6 c 
+            . 9 9 1 9 b 9 f f 6 6 9 b 6 1 . 
+            9 9 . 9 c b b b 6 6 9 1 1 1 1 . 
+            9 . . . 9 c 9 9 b 1 1 1 9 9 . . 
+            . 9 9 9 . c c 9 9 9 1 . . . 9 . 
+            `, 0, randint(5, 20))
+        projectile.setKind(SpriteKind.SpecialProjectile)
+    } else {
+        projectile = sprites.createProjectileFromSide(img`
+            . . . . . . . . . c c 8 . . . . 
+            . . . . . . 8 c c c f 8 c c . . 
+            . . . c c 8 8 f c a f f f c c . 
+            . . c c c f f f c a a f f c c c 
+            8 c c c f f f f c c a a c 8 c c 
+            c c c b f f f 8 a c c a a a c c 
+            c a a b b 8 a b c c c c c c c c 
+            a f c a a b b a c c c c c f f c 
+            a 8 f c a a c c a c a c f f f c 
+            c a 8 a a c c c c a a f f f 8 a 
+            . a c a a c f f a a b 8 f f c a 
+            . . c c b a f f f a b b c c 6 c 
+            . . . c b b a f f 6 6 a b 6 c . 
+            . . . c c b b b 6 6 a c c c c . 
+            . . . . c c a b b c c c . . . . 
+            . . . . . c c c c c c . . . . . 
+            `, 0, randint(20, 120))
+        if (Math.percentChance(25)) {
+            projectile.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . c c c . . . . . . 
+                . . . . . . a b a a . . . . . . 
+                . . . . . c b a f c a c . . . . 
+                . . . . c b b b f f a c c . . . 
+                . . . . b b f a b b a a c . . . 
+                . . . . c b f f b a f c a . . . 
+                . . . . . c a a c b b a . . . . 
+                . . . . . . c c c c . . . . . . 
+                . . . . . . . c . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        } else if (Math.percentChance(40)) {
+            projectile.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . c c c c . . 
+                . c c c c c . c c c c c f c c . 
+                c c a c c c c c 8 f f c f f c c 
+                c a f a a c c a f f c a a f f c 
+                c a 8 f a a c a c c c a a a a c 
+                c b c f a a a a a c c c c c c c 
+                c b b a a c f 8 a c c c 8 c c c 
+                . c b b a b c f a a a 8 8 c c . 
+                . . . . a a b b b a a 8 a c . . 
+                . . . . c b c a a c c b . . . . 
+                . . . . b b c c a b b a . . . . 
+                . . . . b b a b a 6 a . . . . . 
+                . . . . c b b b 6 6 c . . . . . 
+                . . . . . c a 6 6 b c . . . . . 
+                . . . . . . . c c c . . . . . . 
+                `)
+        } else if (Math.percentChance(30)) {
+            projectile.setImage(img`
+                . . . . . . c c c . . . . . . . 
+                . . . . . a a a c c c . . . . . 
+                . . . c a c f a a a a c . . . . 
+                . . c a c f f f a f f a c . . . 
+                . c c a c c f a a c f f a c . . 
+                . a b a a c 6 a a c c f a c c c 
+                . a b b b 6 a b b a a c a f f c 
+                . . a b b a f f b b a a c f f c 
+                c . a a a c c f c b a a c f a c 
+                c c a a a c c a a a b b a c a c 
+                a c a b b a a 6 a b b 6 b b c . 
+                b a c b b b 6 b c . c c a c . . 
+                b a c c a b b a c . . . . . . . 
+                b b a c a b a a . . . . . . . . 
+                a b 6 b b a c . . . . . . . . . 
+                . a a b c . . . . . . . . . . . 
+                `)
+        } else if (Math.percentChance(20)) {
+            projectile.setImage(img`
+                . . . . . . . c c c a c . . . . 
+                . . c c b b b a c a a a c . . . 
+                . c c a b a c b a a a b c c . . 
+                . c a b c f f f b a b b b a . . 
+                . c a c f f f 8 a b b b b b a . 
+                . c a 8 f f 8 c a b b b b b a . 
+                c c c a c c c c a b c f a b c c 
+                c c a a a c c c a c f f c b b a 
+                c c a b 6 a c c a f f c c b b a 
+                c a b c 8 6 c c a a a b b c b c 
+                c a c f f a c c a f a c c c b . 
+                c a 8 f c c b a f f c b c c c . 
+                . c b c c c c b f c a b b a c . 
+                . . a b b b b b b b b b b b c . 
+                . . . c c c c b b b b b c c . . 
+                . . . . . . . . c b b c . . . . 
+                `)
+        } else if (Math.percentChance(15)) {
+            projectile.setImage(img`
+                . . . . . . . c c c a c . . . . 
+                . . c c b 7 7 7 c a a a c . . . 
+                . c c 7 7 a c b a a 7 7 c c . . 
+                . c a b c f 7 7 7 7 7 b 7 a . . 
+                . c a 7 7 7 7 8 a b b b 7 7 a . 
+                . c a 7 f f 8 c a b b 7 7 7 a . 
+                c c 7 a 7 c c c 7 7 7 7 a b c c 
+                c 7 7 a 7 c c 7 7 c 7 f c b b a 
+                c 7 7 b 7 7 7 c a f f 7 c 7 7 a 
+                c 7 7 c 8 7 c c a a a 7 b 7 b c 
+                c a 7 f f a c c a f a 7 c c b . 
+                c a 8 f c c b a f f c b 7 c c . 
+                . c b c c 7 7 7 7 7 7 7 7 a c . 
+                . . a b b 7 b b b 7 7 b b b c . 
+                . . . c c c c b b 7 7 b c c . . 
+                . . . . . . . . c 7 b c . . . . 
+                `)
+        }
     }
     mySprite.z = 5
     projectile.x = randint(0, 160)
